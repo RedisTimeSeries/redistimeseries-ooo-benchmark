@@ -5,7 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/filipecosta90/hdrhistogram"
-	"github.com/mediocregopher/radix"
+	"github.com/mediocregopher/radix/v3"
 	"io/ioutil"
 	"log"
 	"math/rand"
