@@ -16,10 +16,9 @@ The easiest way to get and install the Subscriber Go program is to use
 `go get` and then `go install`:
 ```bash
 # Fetch this repo
-go get github.com/filipecosta90/redistimeseries-ooo-benchmark
-cd $GOPATH/src/github.com/filipecosta90/redistimeseries-ooo-benchmark
-go get ./...
-go build .
+go get github.com/RedisTimeSeries/redistimeseries-ooo-benchmark
+cd $GOPATH/src/github.com/RedisTimeSeries/redistimeseries-ooo-benchmark
+make
 ```
 
 ## Usage of redistimeseries-ooo-benchmark
@@ -27,7 +26,7 @@ go build .
 ```
 Usage of redistimeseries-ooo-benchmark:
   -chunk-size int
-        chunk size. (default 256)
+        chunk size. (default 4096)
   -client-update-tick int
         client update tick. (default 1)
   -compressed

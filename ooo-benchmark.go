@@ -117,7 +117,7 @@ func main() {
 	seed := flag.Int64("random-seed", 12345, "random seed to be used.")
 	compressed := flag.Bool("compressed", false, "test for compressed TS")
 	ooo_percentage := flag.Float64("ooo-percentage", 0.0, "out of order percentage [0.0,100.0]")
-	chunk_size := flag.Int("chunk-size", 256, "chunk size.")
+	chunk_size := flag.Int("chunk-size", 4096, "chunk size.")
 	debug_level := flag.Int("debug-level", 0, "debug level.")
 	ts_minimum := flag.Uint64("ts-minimum", 1, "time-serie ID minimum value ( each time-serie has a dedicated thread ).")
 	ts_maximum := flag.Uint64("ts-maximum", 100, "time-serie ID maximum value ( each time-serie has a dedicated thread ).")

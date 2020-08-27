@@ -9,7 +9,10 @@ GOMOD=$(GOCMD) mod
 GOFMT=$(GOCMD) fmt
 
 .PHONY: all test coverage
-all: test coverage
+all: test coverage build
+
+build:
+	$(GOBUILD) .
 
 checkfmt:
 	@echo 'Checking gofmt';\
