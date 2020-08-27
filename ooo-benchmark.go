@@ -35,10 +35,9 @@ type testResult struct {
 	TsMin           uint64  `json:"TsMin"`
 	TsMax           uint64  `json:"TsMax"`
 	CommandsPerTs   uint64  `json:"CommandsPerTs"`
-	IngestionRate   float64 `json:"IngestionRate"`
-	p50IngestionMs  float64 `json:"p50IngestionMs"`
-	p95IngestionMs  float64 `json:"p95IngestionMs"`
-	p99IngestionMs  float64 `json:"p99IngestionMs"`
+	P50IngestionMs  float64 `json:"p50IngestionMs"`
+	P95IngestionMs  float64 `json:"p95IngestionMs"`
+	P99IngestionMs  float64 `json:"p99IngestionMs"`
 }
 
 func ingestionRoutine(addr string, continueOnError bool, pipelineSize int, clientName string, tsName string, compressed bool, chunk_size int, ooo_percent float64, number_samples uint64, debug_level int, wg *sync.WaitGroup) {
@@ -137,7 +136,7 @@ func main() {
 	totalM := totalWorkers * *samples_per_ts
 	fmt.Println(fmt.Sprintf("Total time-series: %d. Datapoints per TS: %d Total commands: %d", totalWorkers, *samples_per_ts, totalM))
 	fmt.Println(fmt.Sprintf("Simulating OOO %%: %3.2f", *ooo_percentage))
-	fmt.Println(fmt.Sprintf("Compressed chunks: %v", *compressed))
+	fmt.Println(fmt.Sprintf("Compressed chunks: %v. Chunk size %d Bytes.", *compressed, *chunk_size))
 	fmt.Println(fmt.Sprintf("Pipeline: %d", *pipeline))
 	fmt.Println(fmt.Sprintf("Using random seed: %d", *seed))
 
@@ -159,8 +158,10 @@ func main() {
 	p95IngestionMs := float64(latencies.ValueAtQuantile(95.0)) / 1000.0
 	p99IngestionMs := float64(latencies.ValueAtQuantile(99.0)) / 1000.0
 
+	fmt.Fprint(os.Stdout, fmt.Sprintf("\n"))
 	fmt.Fprint(os.Stdout, fmt.Sprintf("#################################################\n"))
 	fmt.Fprint(os.Stdout, fmt.Sprintf("Total Duration %.3f Seconds\n", duration.Seconds()))
+	fmt.Fprint(os.Stdout, fmt.Sprintf("Total Errors %d\n", totalErrors))
 	fmt.Fprint(os.Stdout, fmt.Sprintf("Throughput summary: %.0f requests per second\n", messageRate))
 	fmt.Fprint(os.Stdout, "Latency summary (msec):\n")
 	fmt.Fprint(os.Stdout, fmt.Sprintf("    %9s %9s %9s\n", "p50", "p95", "p99"))
@@ -182,10 +183,9 @@ func main() {
 			TsMin:           *ts_minimum,
 			TsMax:           *ts_maximum,
 			CommandsPerTs:   *samples_per_ts,
-			IngestionRate:   messageRate,
-			p50IngestionMs:  p50IngestionMs,
-			p95IngestionMs:  p95IngestionMs,
-			p99IngestionMs:  p99IngestionMs,
+			P50IngestionMs:  p50IngestionMs,
+			P95IngestionMs:  p95IngestionMs,
+			P99IngestionMs:  p99IngestionMs,
 		}
 		file, err := json.MarshalIndent(res, "", " ")
 		if err != nil {
@@ -214,7 +214,7 @@ func updateCLI(tick *time.Ticker, c chan os.Signal, message_limit uint64) (bool,
 	prevTime := time.Now()
 	prevMessageCount := uint64(0)
 	messageRateTs := []float64{}
-	fmt.Fprint(os.Stdout, fmt.Sprintf("%26s %7s %25s %25s %7s %25s %25s\n", "Test time", " ", "Total Messages", "Total Errors", "", "Message Rate", "p50 lat. (msec)"))
+	fmt.Fprint(os.Stdout, fmt.Sprintf("%26s %7s %25s %25s %7s %25s %25s\n", "Test time", " ", "Total Commands", "Total Errors", "", "Command Rate", "p50 lat. (msec)"))
 	for {
 		select {
 		case <-tick.C:

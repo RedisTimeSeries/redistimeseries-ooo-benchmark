@@ -4,6 +4,8 @@ redistimeseries-ooo-benchmark
 
 # outputs
 *.json
+coverage.txt
+dist/*
 
 # Binaries for programs and plugins
 *.exe
