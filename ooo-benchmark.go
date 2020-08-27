@@ -40,11 +40,16 @@ type testResult struct {
 	P99IngestionMs  float64 `json:"p99IngestionMs"`
 }
 
-func ingestionRoutine(addr string, continueOnError bool, pipelineSize int, clientName string, tsName string, compressed bool, chunk_size int, ooo_percent float64, number_samples uint64, debug_level int, wg *sync.WaitGroup) {
+func ingestionRoutine(addr, socket string, continueOnError bool, pipelineSize int, clientName string, tsName string, compressed bool, chunk_size int, ooo_percent float64, number_samples uint64, debug_level int, wg *sync.WaitGroup) {
 	// tell the caller we've stopped
 	defer wg.Done()
-
-	conn, err := radix.Dial("tcp", addr)
+	var conn radix.Conn
+	var err error
+	if socket != "" {
+		conn, err = radix.Dial("unix", socket)
+	} else {
+		conn, err = radix.Dial("tcp", addr)
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -113,6 +118,7 @@ func ingestionRoutine(addr string, continueOnError bool, pipelineSize int, clien
 
 func main() {
 	host := flag.String("host", "127.0.0.1:6379", "redis host.")
+	socket := flag.String("socket", "", "redis socket. overides --host.")
 	pipeline := flag.Int("pipeline", 1, "pipeline.")
 	seed := flag.Int64("random-seed", 12345, "random seed to be used.")
 	compressed := flag.Bool("compressed", false, "test for compressed TS")
@@ -144,7 +150,7 @@ func main() {
 		clientName := fmt.Sprintf("ooo-client#%d", channel_id)
 		tsName := fmt.Sprintf("ooo-client#%d", channel_id)
 		wg.Add(1)
-		go ingestionRoutine(*host, true, *pipeline, clientName, tsName, *compressed, *chunk_size, *ooo_percentage, *samples_per_ts, *debug_level, &wg)
+		go ingestionRoutine(*host, *socket, true, *pipeline, clientName, tsName, *compressed, *chunk_size, *ooo_percentage, *samples_per_ts, *debug_level, &wg)
 	}
 
 	// listen for C-c
