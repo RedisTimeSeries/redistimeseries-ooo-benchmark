@@ -1,4 +1,4 @@
-module github.com/filipecosta90/redistimeseries-ooo-benchmark
+module github.com/RedisTimeSeries/redistimeseries-ooo-benchmark
 
 go 1.14
 

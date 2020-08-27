@@ -1,0 +1,30 @@
+version: 2
+jobs:
+  build: # test with redistimeseries:edge
+    docker:
+      - image: circleci/golang:1.12
+      - image: redislabs/redistimeseries:edge
+
+    working_directory: /go/src/github.com/RedisTimeSeries/redistimeseries-ooo-benchmark
+    steps:
+      - checkout
+      - run: make coverage
+      - run: make build
+      - run: ./redistimeseries-ooo-benchmark
+      - run: bash <(curl -s https://codecov.io/bash) -t ${CODECOV_TOKEN}
+
+workflows:
+  version: 2
+  commit:
+    jobs:
+      - build
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - build
