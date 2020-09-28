@@ -1,6 +1,6 @@
 module github.com/RedisTimeSeries/redistimeseries-ooo-benchmark
 
-go 1.14
+go 1.13
 
 require (
 	github.com/HdrHistogram/hdrhistogram-go v0.9.0
