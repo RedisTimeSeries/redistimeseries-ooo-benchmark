@@ -20,6 +20,7 @@ Several aspects can dictate the overall system performance, like the:
 
 ## Installation
 
+This benchmark go program is know to be supported for go >= 1.13.
 The easiest way to get and install the Subscriber Go program is to use
 `go get` and then `go install`:
 ```bash

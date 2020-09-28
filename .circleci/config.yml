@@ -2,7 +2,7 @@ version: 2
 jobs:
   build: # test with redistimeseries:edge
     docker:
-      - image: circleci/golang:1.12
+      - image: circleci/golang:1.13
       - image: redislabs/redistimeseries:edge
 
     working_directory: /go/src/github.com/RedisTimeSeries/redistimeseries-ooo-benchmark
