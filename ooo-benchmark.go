@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/filipecosta90/hdrhistogram"
+	"github.com/HdrHistogram/hdrhistogram-go"
 	"github.com/mediocregopher/radix/v3"
 	"io/ioutil"
 	"log"
